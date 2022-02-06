@@ -11,9 +11,6 @@ def display():
             mx=max(mx,element)
     spaces=len(str(mx))
 
-
-
-
     for row in board:
         currentRow="|"
         for elem in row:
@@ -25,4 +22,34 @@ def display():
                 currentRow+=" "*(spaces-len(str(elem)))+str(elem)+"|"
         print(currentRow)
     print()
+
+display()
+# Merging function 
+def mergeOneRowLeft(row):
+    #move elements
+    for j in range(n-1):
+        for i in range(n-1,0,-1):
+            if row[i-1]==0:
+                row[i-1]=row[i]
+                row[i]=0
+    #now combining the element of same value
+    for i in range(n-1):
+        if row[i]==row[i+1]:
+            row[i] *=2;
+            row[i+1]=0
+    #moving to left once again
+    for i in range(n-1,0,-1):
+        if row[i-1]==0:
+            row[i-1]=row[i]
+            row[i]=0
+    return row
+
+def merge_left(currBoard):
+    for i in range(n):
+        currBoard[i]=mergeOneRowLeft(currBoard[i])
+    return currBoard
+
+
+
+merge_left(board)
 display()
