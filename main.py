@@ -1,8 +1,9 @@
 # Creating temporary filled board
-from locale import currency
+import random
+from unicodedata import numeric
 
 
-board=[[0,0,2,2],[2,2,2,0],[4,0,0,4],[0,2,0,0]]
+board=[]
 n=4 #size of n X n
 #display the board
 def display():
@@ -26,7 +27,7 @@ def display():
         print(currentRow)
     print()
 
-display()
+# display()
 # Merging function 
 def mergeOneRowLeft(row):
     #move elements
@@ -80,5 +81,56 @@ def merge_down(currBoard):
     currBoard=transpose(currBoard)
     return currBoard
 
-merge_down(board)
+
+#function to return 2 or 4 randomly such that 1/8 return 4 and 7/8 return 2
+def newVal():
+    if random.randint(1,8)==1:
+        return 4
+    else:
+        return 2
+
+
+#creating blank board
+board=[]
+for i in range(n):
+    row=[]
+    for j in range(n):
+        row.append(0)
+    board.append(row)
+
+#fill two spots
+numReq=2
+while numReq > 0:
+    rowNum = random.randint(0,n-1)
+    colNum = random.randint(0, n-1)
+     
+    if board[rowNum][colNum] == 0:
+        board[rowNum][colNum]=newVal();
+        numReq -=1
+
+print("\n\nWelcome to 2048. Type '1' to merge left, '2' to merge right, '3' to merge up and '4' to merge down.\n\nHere is the starting board:")
+
 display()
+
+    
+gameOver = False
+ 
+while not gameOver:
+    move = input("Which you want to move? ")
+
+    validMove =True
+
+    if move =="1":
+        board = merge_left(board)
+    elif move =="2":
+        board = merge_right(board)
+    elif move =="3":
+        board = merge_up(board)
+    elif move =="4":
+        board = merge_down(board)
+    else:
+        validMove=False
+    if not validMove:
+        print("Enter valid input!")
+    else:
+        display()
