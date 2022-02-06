@@ -1,4 +1,7 @@
 # Creating temporary filled board
+from locale import currency
+
+
 board=[[0,0,2,2],[2,2,2,0],[4,0,0,4],[0,2,0,0]]
 n=4 #size of n X n
 #display the board
@@ -49,7 +52,33 @@ def merge_left(currBoard):
         currBoard[i]=mergeOneRowLeft(currBoard[i])
     return currBoard
 
+def merge_right(currBoard):
+    for i in range(n):
+        currBoard[i]=currBoard[i][::-1]
+        currBoard[i]=mergeOneRowLeft(currBoard[i])
+        currBoard[i]=currBoard[i][::-1]
+    return currBoard
 
+def transpose(currB):
+    for i in range(n):
+        for j in range(i,n):
+            if not i==j:
+                temp=currB[i][j]
+                currB[i][j]=currB[j][i]
+                currB[j][i]=temp
+    return currB
 
-merge_left(board)
+def merge_up(currBoard):
+    currBoard=transpose(currBoard)
+    currBoard=merge_left(currBoard)
+    currBoard=transpose(currBoard)
+    return currBoard
+
+def merge_down(currBoard):
+    currBoard=transpose(currBoard)
+    currBoard=merge_right(currBoard)
+    currBoard=transpose(currBoard)
+    return currBoard
+
+merge_down(board)
 display()
