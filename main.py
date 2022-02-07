@@ -1,9 +1,10 @@
 # Creating temporary filled board
 import random
-from unicodedata import numeric
+import copy
 
 
 board=[]
+score=0
 n=4 #size of n X n
 #display the board
 def display():
@@ -39,6 +40,8 @@ def mergeOneRowLeft(row):
     #now combining the element of same value
     for i in range(n-1):
         if row[i]==row[i+1]:
+            global score
+            score+=2*row[i]
             row[i] *=2;
             row[i+1]=0
     #moving to left once again
@@ -88,8 +91,39 @@ def newVal():
         return 4
     else:
         return 2
+#function to add a value to the board
+def addVal():
+    rowNum = random.randint(0,n-1)
+    colNum = random.randint(0, n-1)
+
+    while not board[rowNum][colNum] ==0:
+        rowNum = random.randint(0,n-1)
+        colNum = random.randint(0, n-1)
+
+    board[rowNum][colNum]=newVal()
+
+def won():
+    for row in board:
+        if 2048 in row:
+            return True
+    return False
 
 
+def noMoves():
+    b1=copy.deepcopy(board)
+    b2=copy.deepcopy(board)
+    
+    b1=merge_left(b1)
+    if b1 == b2:
+        b1=merge_right(b1)
+        if b1 == b2:
+            b1=merge_up(b1)
+            if b1==b2:
+                b1=merge_down(b1)
+                if b1 == b2:
+                    return True
+    return False
+                
 #creating blank board
 board=[]
 for i in range(n):
@@ -109,7 +143,7 @@ while numReq > 0:
         numReq -=1
 
 print("\n\nWelcome to 2048. Type '1' to merge left, '2' to merge right, '3' to merge up and '4' to merge down.\n\nHere is the starting board:")
-
+print(f"Score: {score}")
 display()
 
     
@@ -119,18 +153,36 @@ while not gameOver:
     move = input("Which you want to move? ")
 
     validMove =True
-
+    #creating a copy to check if board didnt changed after the move
+    tempBoard=copy.deepcopy(board)
     if move =="1":
         board = merge_left(board)
     elif move =="2":
         board = merge_right(board)
     elif move =="3":
         board = merge_up(board)
-    elif move =="4":
+    elif move =="4": 
         board = merge_down(board)
     else:
         validMove=False
     if not validMove:
         print("Enter valid input!")
     else:
-        display()
+        if board== tempBoard:
+            print("Try a different direction!")
+        else:
+            if won():
+                print(f"Score: {score}")
+
+                display()
+                print("You Won!!!")
+                gameOver=True
+            else:
+                addVal()
+                print(f"Score: {score}")
+
+                display()
+
+                if noMoves():
+                    print("No moves possible. You loose!")
+                    gameOver=True
